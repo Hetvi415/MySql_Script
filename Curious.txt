@@ -1,0 +1,196 @@
+
+CREATE TABLE [dbo].[UserProfile](
+	[UID] [int] NOT NULL,
+	[FirstName] [varchar](50) NULL,
+	[LastName] [varchar](50) NULL,
+	[Email] [varchar](100) NULL,
+	[Password] [varchar](50) NULL,
+	[Location] [varchar](50) NULL,
+	[GitHubID] [varchar](50) NULL,
+	[Image] [varchar](100) NULL,
+	[Created_At] [datetime] NULL,
+	[Is_Blocked] [varchar](10) NULL,
+	[Is_Active] [varchar](10) NULL,
+	[Is_Superuser] [varchar](10) NULL,
+	[Is_Admin] [varchar](10) NULL,
+	[Report] [varchar](10) NULL,
+ CONSTRAINT [PK_UserProfile] PRIMARY KEY CLUSTERED 
+(
+	[UID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+CREATE TABLE [dbo].[Content](
+	[QID] [int] NOT NULL,
+	[UID] [int] NULL,
+	[TagID] [int] NULL,
+	[Title] [varchar](max) NULL,
+	[Description] [varchar](max) NULL,
+	[Links] [varchar](max) NULL,
+	[Images] [varchar](max) NULL,
+	[Code] [varchar](max) NULL,
+	[Vote] [bigint] NULL,
+	[Views] [bigint] NULL,
+	[Created_At] [datetime] NULL,
+	[Is_Disabled] [varchar](10) NULL,
+ CONSTRAINT [PK_Content] PRIMARY KEY CLUSTERED 
+(
+	[QID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+
+CREATE TABLE [dbo].[Resolution](
+	[AID] [int] NOT NULL,
+	[QID] [int] NULL,
+	[UID] [int] NULL,
+	[Description] [varchar](max) NULL,
+	[Links] [varchar](max) NULL,
+	[Images] [varchar](max) NULL,
+	[Code] [varchar](max) NULL,
+	[Vote] [bigint] NULL,
+	[Views] [bigint] NULL,
+	[Create_At] [datetime] NULL,
+	[Is_Disabled] [varchar](10) NULL,
+ CONSTRAINT [PK_Resolution] PRIMARY KEY CLUSTERED 
+(
+	[AID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+
+CREATE TABLE [dbo].[Article](
+	[TID] [int] NOT NULL,
+	[TagID] [int] NULL,
+	[UID] [int] NULL,
+	[Title] [varchar](max) NULL,
+	[Description] [varchar](max) NULL,
+	[Created_At] [datetime] NULL,
+	[Is_Disabled] [varchar](10) NULL,
+ CONSTRAINT [PK_Article] PRIMARY KEY CLUSTERED 
+(
+	[TID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+
+CREATE TABLE [dbo].[Comments](
+	[CID] [int] NOT NULL,
+	[UID] [int] NULL,
+	[Type] [varbinary](50) NULL,
+	[Comment] [varchar](max) NULL,
+	[Reference] [int] NULL,
+ CONSTRAINT [PK_Comments] PRIMARY KEY CLUSTERED 
+(
+	[CID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+
+CREATE TABLE [dbo].[Tags](
+	[TagID] [int] NOT NULL,
+	[TagName] [varchar](50) NULL,
+ CONSTRAINT [PK_Tags] PRIMARY KEY CLUSTERED 
+(
+	[TagID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+
+CREATE TABLE [dbo].[Vote_view](
+	[UID] [int] NULL,
+	[Vote] [bigint] NULL,
+	[Views] [bigint] NULL,
+	[Type] [varchar](50) NULL,
+	[Reference] [int] NULL
+) ON [PRIMARY]
+GO
+
+
+ALTER TABLE [dbo].[Article]  WITH CHECK ADD  CONSTRAINT [FK_Article_Tags] FOREIGN KEY([TagID])
+REFERENCES [dbo].[Tags] ([TagID])
+GO
+ALTER TABLE [dbo].[Article] CHECK CONSTRAINT [FK_Article_Tags]
+GO
+ALTER TABLE [dbo].[Article]  WITH CHECK ADD  CONSTRAINT [FK_Article_UserProfile] FOREIGN KEY([UID])
+REFERENCES [dbo].[UserProfile] ([UID])
+GO
+ALTER TABLE [dbo].[Article] CHECK CONSTRAINT [FK_Article_UserProfile]
+GO
+ALTER TABLE [dbo].[Comments]  WITH CHECK ADD  CONSTRAINT [FK_Comments_UserProfile] FOREIGN KEY([UID])
+REFERENCES [dbo].[UserProfile] ([UID])
+GO
+ALTER TABLE [dbo].[Comments] CHECK CONSTRAINT [FK_Comments_UserProfile]
+GO
+ALTER TABLE [dbo].[Content]  WITH CHECK ADD  CONSTRAINT [FK_Content_Tags] FOREIGN KEY([TagID])
+REFERENCES [dbo].[Tags] ([TagID])
+GO
+ALTER TABLE [dbo].[Content] CHECK CONSTRAINT [FK_Content_Tags]
+GO
+ALTER TABLE [dbo].[Content]  WITH CHECK ADD  CONSTRAINT [FK_Content_UserProfile] FOREIGN KEY([UID])
+REFERENCES [dbo].[UserProfile] ([UID])
+GO
+ALTER TABLE [dbo].[Content] CHECK CONSTRAINT [FK_Content_UserProfile]
+GO
+ALTER TABLE [dbo].[Resolution]  WITH CHECK ADD  CONSTRAINT [FK_Resolution_Content] FOREIGN KEY([QID])
+REFERENCES [dbo].[Content] ([QID])
+GO
+ALTER TABLE [dbo].[Resolution] CHECK CONSTRAINT [FK_Resolution_Content]
+GO
+ALTER TABLE [dbo].[Resolution]  WITH CHECK ADD  CONSTRAINT [FK_Resolution_UserProfile] FOREIGN KEY([UID])
+REFERENCES [dbo].[UserProfile] ([UID])
+GO
+ALTER TABLE [dbo].[Resolution] CHECK CONSTRAINT [FK_Resolution_UserProfile]
+GO
+ALTER TABLE [dbo].[Vote_view]  WITH CHECK ADD  CONSTRAINT [FK_Vote_view_UserProfile] FOREIGN KEY([UID])
+REFERENCES [dbo].[UserProfile] ([UID])
+GO
+ALTER TABLE [dbo].[Vote_view] CHECK CONSTRAINT [FK_Vote_view_UserProfile]
+GO
+
+
+
+------------------------------------------------------------------------------Function---------------------------------------------------------------
+create   function [dbo].[dayDiff]()
+returns table
+as
+return
+(
+	select DATEDIFF(day,Created_At,SYSDATETIME()) as dates from Content where Vote=0 AND Views=0;
+)
+GO
+
+
+------------------------------------------------------------------------------VIew---------------------------------------------------------------
+
+CREATE VIEW Detail 
+AS
+select u.FirstName as UserName,c.Title as Question,r.Description as Answer
+from Content c,Resolution r,UserProfile u
+where c.QID=r.QID AND r.UID=u.UID AND r.QID=101;
+GO
+
+
+------------------------------------------------------------------------------Stored Procedure---------------------------------------------------------------
+create or alter procedure CheckDisable
+as
+begin
+
+	update UserProfile set Is_Active='inactive' where UID  in(select u.UID as userid 
+	from UserProfile as u ,Article as a,Content as c,Resolution as r ,Vote_view as vo
+	where u.UID != c.UID and u.UID!=r.UID and u.UID!=a.UID  and u.UID!=vo.UID  and u.UID in (
+	select UID from UserProfile 
+	where DATEDIFF(day,Created_At,SYSDATETIME())>1 and UID=6));
+	
+end;
+go
+
+exec CheckDisable
+
